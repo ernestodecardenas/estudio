@@ -1,0 +1,64 @@
+{% extends 'casos/base.html' %}
+{% block contenido %}
+<h2>Caso: {{ caso.codigo }} - {{ caso.titulo }}</h2>
+<p><strong>Cliente:</strong> {{ caso.cliente.nombres }}</p>
+<p><strong>Estado:</strong> {{ caso.estado.nombre }}</p>
+<p><strong>Total Pagado:</strong> S/. {{ caso.total_pagado|floatformat:2 }}</p>
+
+<hr>
+<h3>Expedientes</h3>
+<ul>
+    {% for exp in caso.expedientes.all %}
+        <li>
+            Exp. {{ exp.numero }} - {{ exp.juzgado }}
+            {% if exp.documento %}
+                | <a href="{{ exp.documento.url }}" target="_blank">Ver Documento</a>
+            {% else %}
+                | <em>Sin documento</em>
+            {% endif %}
+
+            <form action="{% url 'subir_documento' caso.id %}" method="post" enctype="multipart/form-data" class="d-inline-block ms-3">
+                {% csrf_token %}
+                <input type="hidden" name="expediente_id" value="{{ exp.id }}">
+                <input type="file" name="documento" required>
+                <button type="submit" class="btn btn-sm btn-outline-primary">Subir</button>
+            </form>
+        </li>
+    {% empty %}
+        <li>No hay expedientes asociados.</li>
+    {% endfor %}
+</ul>
+
+<hr>
+<h3>Pagos Registrados</h3>
+<ul>
+    {% for pago in caso.pagos.all %}
+        <li>{{ pago.fecha|date:"d/m/Y" }} - S/. {{ pago.monto|floatformat:2 }} ({{ pago.descripcion }})</li>
+    {% empty %}
+        <li>No hay pagos registrados.</li>
+    {% endfor %}
+</ul>
+
+<hr>
+<h3>Registrar Nuevo Pago</h3>
+{% if caso.estado.permite_pagos %}
+    <form method="post" class="w-50">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label>Monto (S/.):</label>
+            <input type="number" step="0.01" name="monto" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Descripción:</label>
+            <input type="text" name="descripcion" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success">Registrar Pago</button>
+    </form>
+{% else %}
+    <div class="alert alert-warning">
+        Este caso no admite pagos.
+    </div>
+{% endif %}
+
+<a href="{% url 'lista_casos' %}" class="btn btn-secondary mt-3">Volver al listado</a>
+{% endblock %}

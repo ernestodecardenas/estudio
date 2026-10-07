@@ -1,0 +1,9 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | Vargas & Asociados{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">Vargas & Asociados – Gestión de Casos</a></h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

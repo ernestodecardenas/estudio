@@ -1,0 +1,25 @@
+{% extends 'casos/base.html' %}
+{% block contenido %}
+<h2>{{ titulo }}</h2>
+<form method="post" class="w-50">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label>Nombres:</label>
+        <input type="text" name="nombres" value="{{ cliente.nombres|default:'' }}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Documento:</label>
+        <input type="text" name="documento" value="{{ cliente.documento|default:'' }}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Teléfono:</label>
+        <input type="text" name="telefono" value="{{ cliente.telefono|default:'' }}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Correo:</label>
+        <input type="email" name="correo" value="{{ cliente.correo|default:'' }}" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a href="{% url 'lista_clientes' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}
